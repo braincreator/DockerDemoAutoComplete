@@ -1,9 +1,9 @@
 # DockerDemoAutoComplete
 Steps to get docker image:</br>
 <b>1. Clone repository of app (docker image)</b></br>
-<code>sudo git clone https://github.com/braincreator/DockerDemo.git PollService/</code></br>
+<code>sudo git clone https://github.com/braincreator/DockerDemo.git AutoComplete/</code></br>
 <b>2. Change directory to just cloned repo folder</b></br>
-<code>cd PollService/</code></br>
+<code>cd AutoComplete/src/AutoComplete</code></br>
 <b>3. Build docker image</b></br>
 <code>docker build -t myapp .</code></br>
 <b>4. Run docker container with newly created image</b></br>

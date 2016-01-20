@@ -11,6 +11,10 @@ using Google.Apis.Datastore.v1beta1.Data;
 using Google.Apis.Services;
 using Microsoft.AspNet.Mvc;
 using QueryResultBatch = Google.Apis.Datastore.v1beta1.Data.QueryResultBatch;
+using Enyim.Caching;
+using Enyim.Caching.Configuration;
+using Enyim.Caching.Memcached;
+using System.Net;
 
 namespace AutoComplete.Controllers
 {
@@ -18,10 +22,12 @@ namespace AutoComplete.Controllers
     {
         AutoCompleteModel model = new AutoCompleteModel();
         private DatastoreService service;
+        private MemcachedClient memcachedClient;
 
         public HomeController()
         {
             InitDataStoreService();
+            InitMemcachedClient();
         }
 
         public IActionResult Index()
@@ -77,6 +83,15 @@ namespace AutoComplete.Controllers
                 Id = int.Parse(entityResult.Entity.Key.Path.First().Id.ToString())
             }).ToList();
 
+
+            //test memcache
+            foreach (var item in list)
+            {
+                memcachedClient.Store(StoreMode.Set, item.Id.ToString(), item.Name);
+                var cacheItem = memcachedClient.Get(item.Id.ToString());
+                Debug.WriteLine(cacheItem);
+            }
+
             return Json(list);
         }
 
@@ -102,13 +117,18 @@ namespace AutoComplete.Controllers
             });
         }
 
-        void InitCloudSearchService()
+        void InitMemcachedClient()
         {
+            MemcachedClientConfiguration config = new MemcachedClientConfiguration();
+            
+            config.Servers.Add(new IPEndPoint(IPAddress.Parse("162.222.181.18"), 80));
+            config.Protocol = MemcachedProtocol.Binary;
+            config.Authentication.Type = typeof(PlainTextAuthenticator);
+            config.Authentication.Parameters["userName"] = "user";
+            config.Authentication.Parameters["password"] = "m9NFPbQ2 ";
+            config.Authentication.Parameters["zone"] = "us-central1-f";
 
-            //var service = new CloudsearchService(new BaseClientService.Initializer
-            //{
-            //    ApiKey = "AIzaSyCvmHFoJmzIUFW1yV8V83bKZcSauPRZZtI"
-            //});
+            memcachedClient = new MemcachedClient(config);
         }
     }
 }

@@ -5,6 +5,8 @@
   },
 
   "dependencies": {
+    "Google.Apis.Cloudsearch.v1": "1.9.0.20",
+    "Google.Apis.Compute.v1beta16": "1.8.1.160",
     "Google.Apis.Datastore.v1beta1": "1.10.0.370",
     "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
     "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
@@ -26,13 +28,7 @@
   },
 
   "frameworks": {
-    "dnx451": {
-      "dependencies": {
-        "Google.Apis.Cloudsearch.v1": "1.9.0.20",
-        "Google.Apis.Compute.v1beta16": "1.8.1.160"
-      }
-    }
-    
+    "dnx451": { }    
   },
 
   "exclude": [

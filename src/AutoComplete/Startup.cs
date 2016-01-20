@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Builder;
@@ -15,10 +16,19 @@ namespace AutoComplete
         public Startup(IHostingEnvironment env)
         {
             // Set up configuration sources.
-            var builder = new ConfigurationBuilder()
+            try
+            {
+                var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddEnvironmentVariables();
-            Configuration = builder.Build();
+                Configuration = builder.Build();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+            
         }
 
         public IConfigurationRoot Configuration { get; set; }
@@ -27,35 +37,53 @@ namespace AutoComplete
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
+            try
+            {
+                services.AddMvc();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
-            if (env.IsDevelopment())
+            try
             {
-                app.UseBrowserLink();
-                app.UseDeveloperExceptionPage();
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                loggerFactory.AddDebug();
+
+                if (env.IsDevelopment())
+                {
+                    //app.UseBrowserLink();
+                    //app.UseDeveloperExceptionPage();
+                }
+                else
+                {
+                    //app.UseExceptionHandler("/Home/Error");
+                }
+
+                app.UseIISPlatformHandler();
+
+                app.UseStaticFiles();
+
+                app.UseMvc(routes =>
+                {
+                    routes.MapRoute(
+                        name: "default",
+                        template: "{controller=Home}/{action=Index}/{id?}");
+                });
             }
-            else
+            catch (Exception ex)
             {
-                app.UseExceptionHandler("/Home/Error");
+                Debug.WriteLine(ex.InnerException.Message);
+                throw;
             }
-
-            app.UseIISPlatformHandler();
-
-            app.UseStaticFiles();
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            
         }
 
         // Entry point for the application.

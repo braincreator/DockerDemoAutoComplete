@@ -4,13 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using AutoComplete.Models;
-//using Google.Apis.Auth.OAuth2;
-//using Google.Apis.Cloudsearch.v1;
-//using Google.Apis.Datastore.v1beta1;
-//using Google.Apis.Datastore.v1beta1.Data;
-//using Google.Apis.Services;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Datastore.v1beta1;
+using Google.Apis.Datastore.v1beta1.Data;
+using Google.Apis.Services;
 using Microsoft.AspNet.Mvc;
-//using QueryResultBatch = Google.Apis.Datastore.v1beta1.Data.QueryResultBatch;
+using QueryResultBatch = Google.Apis.Datastore.v1beta1.Data.QueryResultBatch;
 //using Enyim.Caching;
 //using Enyim.Caching.Configuration;
 //using Enyim.Caching.Memcached;
@@ -21,7 +20,7 @@ namespace AutoComplete.Controllers
     public class HomeController : Controller
     {
         AutoCompleteModel model = new AutoCompleteModel();
-        //private DatastoreService service;
+        private DatastoreService service;
         //private MemcachedClient memcachedClient;
 
         public HomeController()
@@ -62,7 +61,6 @@ namespace AutoComplete.Controllers
             //q.AllowLiteral = true;
 
             //RunQueryRequest request = new RunQueryRequest();
-
             //request.GqlQuery = q;
 
             //var obj = service.Datasets.RunQuery(request, "containerdemo-1190");
@@ -106,24 +104,24 @@ namespace AutoComplete.Controllers
 
         void InitDataStoreService()
         {
-            //const string serviceAccountEmail = "containersvcacc@containerdemo-1190.iam.gserviceaccount.com";
-            //var certificate = new X509Certificate2(@"ContainerDemo-65e90699b00f.p12", "notasecret", X509KeyStorageFlags.Exportable);
+            const string serviceAccountEmail = "containersvcacc@containerdemo-1190.iam.gserviceaccount.com";
+            var certificate = new X509Certificate2(@"ContainerDemo-65e90699b00f.p12", "notasecret", X509KeyStorageFlags.Exportable);
 
-            //var credential = new ServiceAccountCredential(
-            //       new ServiceAccountCredential.Initializer(serviceAccountEmail)
-            //       {
-            //           Scopes = new[] {
-            //               DatastoreService.Scope.CloudPlatform.ToLower(),
-            //               DatastoreService.Scope.Datastore.ToLower(),
-            //               DatastoreService.Scope.UserinfoEmail.ToLower()
-            //           }
-            //       }.FromCertificate(certificate));
+            var credential = new ServiceAccountCredential(
+                   new ServiceAccountCredential.Initializer(serviceAccountEmail)
+                   {
+                       Scopes = new[] {
+                           DatastoreService.Scope.CloudPlatform.ToLower(),
+                           DatastoreService.Scope.Datastore.ToLower(),
+                           DatastoreService.Scope.UserinfoEmail.ToLower()
+                       }
+                   }.FromCertificate(certificate));
 
-            //service = new DatastoreService(new BaseClientService.Initializer
-            //{
-            //    HttpClientInitializer = credential,
-            //    ApplicationName = "***"
-            //});
+            service = new DatastoreService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "***"
+            });
         }
 
         void InitMemcachedClient()

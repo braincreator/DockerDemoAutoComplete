@@ -14,10 +14,11 @@ EXPOSE 5005
 COPY project.json /app/  
 WORKDIR /app  
 RUN ["dnu", "restore"]
-RUN ["gulp", "clean"]
-RUN ["gulp", "min"]
 COPY . /app  
 
+CMD ["cd", "/app/"]
+CMD ["npm", "install"]
+CMD ["bower", "install"]
+
 ENTRYPOINT ["dnx", "-p", "project.json", "web"]
-# overwrite this with 'CMD []' in a dependent Dockerfile
-CMD ["/bin/bash"]
+

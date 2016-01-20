@@ -5,15 +5,15 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using AutoComplete.Models;
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Datastore.v1beta1;
-using Google.Apis.Datastore.v1beta1.Data;
 using Google.Apis.Services;
 using Microsoft.AspNet.Mvc;
-using QueryResultBatch = Google.Apis.Datastore.v1beta1.Data.QueryResultBatch;
 //using Enyim.Caching;
 //using Enyim.Caching.Configuration;
 //using Enyim.Caching.Memcached;
 using System.Net;
+using Google.Apis.Datastore.v1beta1;
+using Google.Apis.Datastore.v1beta1.Data;
+using Google.Apis.Http;
 
 namespace AutoComplete.Controllers
 {
@@ -56,49 +56,49 @@ namespace AutoComplete.Controllers
         [HttpPost]
         public JsonResult Autocomplete(string term)
         {
-            //GqlQuery q = new GqlQuery();
-            //q.QueryString = $"select * from product where nm >= '{term}' limit 10";
-            //q.AllowLiteral = true;
+            GqlQuery q = new GqlQuery();
+            q.QueryString = $"select * from product where nm >= '{term}' limit 10";
+            q.AllowLiteral = true;
 
-            //RunQueryRequest request = new RunQueryRequest();
-            //request.GqlQuery = q;
+            RunQueryRequest request = new RunQueryRequest();
+            request.GqlQuery = q;
 
-            //var obj = service.Datasets.RunQuery(request, "containerdemo-1190");
-            //RunQueryResponse resp = null;
-            //try
-            //{
-            //    resp = obj.Execute();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine(ex.Message);
-            //    throw;
-            //}
+            var obj = service.Datasets.RunQuery(request, "containerdemo-1190");
+            RunQueryResponse resp = null;
+            try
+            {
+                resp = obj.Execute();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
 
-            //var list = resp.Batch.EntityResults.Select(entityResult => new Product
-            //{
-            //    Name = entityResult.Entity.Properties["nm"].Values.First().StringValue,
-            //    Id = int.Parse(entityResult.Entity.Key.Path.First().Id.ToString())
-            //}).ToList();
+            var list = resp.Batch.EntityResults.Select(entityResult => new Product
+            {
+                Name = entityResult.Entity.Properties["nm"].Values.First().StringValue,
+                Id = int.Parse(entityResult.Entity.Key.Path.First().Id.ToString())
+            }).ToList();
 
 
             ////test memcache
             //foreach (var item in list)
-            //{
+            //{FromCertificate
             //    memcachedClient.Store(StoreMode.Set, item.Id.ToString(), item.Name);
             //    var cacheItem = memcachedClient.Get(item.Id.ToString());
             //    Debug.WriteLine(cacheItem);
             //}
 
-            var list = new List<Product>();
-            for (int i = 0; i < 50; i++)
-            {
-                list.Add(new Product()
-                {
-                    Id = i,
-                    Name = $"product{i}"
-                });
-            }
+            //var list = new List<Product>();
+            //for (int i = 0; i < 50; i++)
+            //{
+            //    list.Add(new Product()
+            //    {
+            //        Id = i,
+            //        Name = $"product{i}"
+            //    });
+            //}
             return Json(list);
         }
 
@@ -106,6 +106,7 @@ namespace AutoComplete.Controllers
         {
             const string serviceAccountEmail = "containersvcacc@containerdemo-1190.iam.gserviceaccount.com";
             var certificate = new X509Certificate2(@"ContainerDemo-65e90699b00f.p12", "notasecret", X509KeyStorageFlags.Exportable);
+
 
             var credential = new ServiceAccountCredential(
                    new ServiceAccountCredential.Initializer(serviceAccountEmail)
@@ -116,7 +117,7 @@ namespace AutoComplete.Controllers
                            DatastoreService.Scope.UserinfoEmail.ToLower()
                        }
                    }.FromCertificate(certificate));
-
+            
             service = new DatastoreService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,

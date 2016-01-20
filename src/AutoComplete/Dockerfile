@@ -1,13 +1,13 @@
 FROM microsoft/aspnet
 
-#install npm in docker image
-RUN apt-get update && apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup | bash -
-RUN apt-get install -y nodejs
-
-#install bower and grunt
-RUN npm install -g bower
-RUN npm install -g gulp -y
+RUN apt-get update
+RUN apt-get install curl -y
+RUN apt-get install software-properties-common -y
+RUN add-apt-repository ppa:chris-lea/node.js
+RUN apt-get update
+RUN apt-get install nodejs -y
+RUN curl -L https://www.npmjs.com/install.sh | sh
+RUN npm install --global gulp -y
 
 EXPOSE 5005
 
@@ -19,3 +19,5 @@ RUN ["gulp", "min"]
 COPY . /app  
 
 ENTRYPOINT ["dnx", "-p", "project.json", "web"]
+# overwrite this with 'CMD []' in a dependent Dockerfile
+CMD ["/bin/bash"]

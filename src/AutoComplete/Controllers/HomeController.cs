@@ -56,31 +56,31 @@ namespace AutoComplete.Controllers
         [HttpPost]
         public JsonResult Autocomplete(string term, int limit)
         {
-            GqlQuery q = new GqlQuery();
-            q.QueryString = $"select * from product where nm >= '{term}' limit {limit}";
-            q.AllowLiteral = true;
+            //GqlQuery q = new GqlQuery();
+            //q.QueryString = $"select * from product where nm >= '{term}' limit {limit}";
+            //q.AllowLiteral = true;
 
-            RunQueryRequest request = new RunQueryRequest();
-            request.GqlQuery = q;
+            //RunQueryRequest request = new RunQueryRequest();
+            //request.GqlQuery = q;
 
-            var obj = service.Datasets.RunQuery(request, "containerdemo-1190");
-            RunQueryResponse resp = null;
-            try
-            {
-                resp = obj.Execute();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                throw;
-            }
+            //var obj = service.Datasets.RunQuery(request, "containerdemo-1190");
+            //RunQueryResponse resp = null;
+            //try
+            //{
+            //    resp = obj.Execute();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //    throw;
+            //}
 
-            var list = resp.Batch.EntityResults.Select(entityResult => new Product
-            {
-                Name = entityResult.Entity.Properties["nm"].Values.First().StringValue,
-                Id = int.Parse(entityResult.Entity.Key.Path.First().Id.ToString())
-            }).ToList();
-
+            //var list = resp.Batch.EntityResults.Select(entityResult => new Product
+            //{
+            //    Name = entityResult.Entity.Properties["nm"].Values.First().StringValue,
+            //    Id = int.Parse(entityResult.Entity.Key.Path.First().Id.ToString())
+            //}).ToList();
+            
 
             ////test memcache
             //foreach (var item in list)

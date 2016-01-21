@@ -1,5 +1,5 @@
 sudo git clone https://github.com/braincreator/DockerDemoAutoComplete /demo
-cd demo/src/AutoComplete
+cd /demo/src/AutoComplete
 docker build -t gcr.io/containerdemo-1190/acdemo .
 gcloud docker push gcr.io/containerdemo-1190/acdemo
 kubectl delete services acdemo

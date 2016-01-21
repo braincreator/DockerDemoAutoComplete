@@ -16,7 +16,7 @@ RUN ["dnu", "restore"]
 WORKDIR ./src/AutoComplete
 
 RUN ["npm", "install"]
-RUN ["bower", "install", "--allow-root"]
+#RUN ["bower", "install", "--allow-root"]
 RUN ["gulp", "clean"]
 RUN ["gulp", "min"]
 

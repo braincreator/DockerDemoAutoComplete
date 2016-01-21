@@ -54,10 +54,10 @@ namespace AutoComplete.Controllers
         }
 
         [HttpPost]
-        public JsonResult Autocomplete(string term)
+        public JsonResult Autocomplete(string term, int limit)
         {
             GqlQuery q = new GqlQuery();
-            q.QueryString = $"select * from product where nm >= '{term}' limit 10";
+            q.QueryString = $"select * from product where nm >= '{term}' limit {limit}";
             q.AllowLiteral = true;
 
             RunQueryRequest request = new RunQueryRequest();

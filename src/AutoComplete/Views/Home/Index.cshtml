@@ -100,7 +100,7 @@
                 var customer = new Array();
                 console.log("requesting autocomplete");
                 console.log(request.term);
-                callServer("Autocomplete", { "term": request.term }, function (data) {
+                callServer("Autocomplete", { "term": request.term, "limit": 20}, function (data) {
                     console.log("success", data);
                     for (var i = 0; i < data.length; i++) {
                         customer[i] = { label: data[i].Name, Id: data[i].Id };

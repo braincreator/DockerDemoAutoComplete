@@ -16,9 +16,9 @@ RUN ["dnu", "restore"]
 WORKDIR ./src/AutoComplete
 
 RUN ["npm", "install"]
-#RUN ["bower", "install", "--allow-root"]
 RUN ["gulp", "clean"]
 RUN ["gulp", "min"]
+RUN ["bower", "install", "--allow-root"]
 
 EXPOSE 5005
 ENTRYPOINT ["dnx", "web", "--server.urls", "http://0.0.0.0:5005"]

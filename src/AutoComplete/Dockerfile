@@ -1,24 +1,25 @@
-FROM microsoft/aspnet
+FROM microsoft/aspnet:latest
 
+# Install NPM
 RUN apt-get update && apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup | bash -
 RUN apt-get install -y nodejs
 
-EXPOSE 5005
+# Install Gulp
+RUN npm install -g gulp
+RUN npm install -g bower
 
-COPY project.json /app/  
+COPY . /app/  
 WORKDIR /app  
 #install nuget packages
 RUN ["dnu", "restore"]
-#install bower and gulp
-RUN npm install -g bower
-RUN npm install -g gulp
+WORKDIR ./src/AutoComplete
 
-COPY . /app  
+RUN ["npm", "install"]
+RUN ["bower", "install"]
+RUN ["gulp", "clean"]
+RUN ["gulp", "min"]
 
-CMD ["cd", "/app/"]
-CMD ["npm", "install"]
-CMD ["bower", "install"]
-
-ENTRYPOINT ["dnx", "-p", "project.json", "web"]
+EXPOSE 5005
+ENTRYPOINT ["dnx", "web", "--server.urls", "http://0.0.0.0:5005"]
 

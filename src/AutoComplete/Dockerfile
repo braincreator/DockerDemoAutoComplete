@@ -15,7 +15,7 @@ WORKDIR /app
 RUN ["dnu", "restore"]
 WORKDIR ./src/AutoComplete
 
-RUN ["npm", "install"]
+RUN npm -g install npm@latest-2
 RUN ["gulp", "clean"]
 RUN ["gulp", "min"]
 RUN ["bower", "install", "--allow-root"]

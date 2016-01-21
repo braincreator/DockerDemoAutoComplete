@@ -1,6 +1,8 @@
 ﻿@using System.Security.Policy
 @model AutoComplete.Models.AutoCompleteModel
 
+<link rel="stylesheet" href="~/css/site.css" />
+
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -78,6 +80,8 @@
         <input type="text" name="ac" id="autocomplete" />
     </div>
 </div>
+
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.22/jquery-ui.js"></script>
 
 <script type="text/javascript">
     function callServer(action, param, callback) {

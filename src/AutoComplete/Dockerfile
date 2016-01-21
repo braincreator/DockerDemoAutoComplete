@@ -1,19 +1,24 @@
 FROM microsoft/aspnet
 
-# Set the ASP.NET 5 environment variable to indicate our current environment
-ENV ASPNET_ENV Production
- 
-# Copy over our web project
-COPY . /project
- 
-# Set the working directory to the copied project
-WORKDIR /project
- 
-# As a part of the build process, restore all the dependencies into the container
+#RUN apt-get update && apt-get install -y curl
+#RUN curl -sL https://deb.nodesource.com/setup | bash -
+#RUN apt-get install -y nodejs
+
+
+#install bower and gulp
+#RUN npm install -g bower
+#RUN npm install -g gulp
+
+EXPOSE 5005
+
+COPY project.json /app/  
+WORKDIR /app  
 RUN ["dnu", "restore"]
- 
-# When we run the container, it will launch the web server for us
-# NOTE: We have to specify --server.urls so that it uses 0.0.0.0 instead of the default localhost,
-# otherwise we will not be able to view the website outside of the container
+COPY . /app  
+
+#CMD ["cd", "/app/"]
+#CMD ["npm", "install"]
+#CMD ["bower", "install"]
+
 ENTRYPOINT ["dnx", "-p", "project.json", "web"]
 

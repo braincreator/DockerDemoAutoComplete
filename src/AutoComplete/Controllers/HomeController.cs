@@ -11,7 +11,6 @@ using Microsoft.AspNet.Mvc;
 //using Enyim.Caching.Configuration;
 //using Enyim.Caching.Memcached;
 using System.Net;
-using System.Net.Http;
 using Google.Apis.Datastore.v1beta1;
 using Google.Apis.Datastore.v1beta1.Data;
 using Google.Apis.Http;
@@ -57,34 +56,30 @@ namespace AutoComplete.Controllers
         [HttpPost]
         public JsonResult Autocomplete(string term, int limit)
         {
-            HttpClient client = new HttpClient();
-            client.PostAsync(new Uri(), )
+            GqlQuery q = new GqlQuery();
+            q.QueryString = $"select * from product where nm >= '{term}' limit {limit}";
+            q.AllowLiteral = true;
 
+            RunQueryRequest request = new RunQueryRequest();
+            request.GqlQuery = q;
 
-            //GqlQuery q = new GqlQuery();
-            //q.QueryString = $"select * from product where nm >= '{term}' limit {limit}";
-            //q.AllowLiteral = true;
+            var obj = service.Datasets.RunQuery(request, "containerdemo-1190");
+            RunQueryResponse resp = null;
+            try
+            {
+                resp = obj.Execute();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
 
-            //RunQueryRequest request = new RunQueryRequest();
-            //request.GqlQuery = q;
-
-            //var obj = service.Datasets.RunQuery(request, "containerdemo-1190");
-            //RunQueryResponse resp = null;
-            //try
-            //{
-            //    resp = obj.Execute();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine(ex.Message);
-            //    throw;
-            //}
-
-            //var list = resp.Batch.EntityResults.Select(entityResult => new Product
-            //{
-            //    Name = entityResult.Entity.Properties["nm"].Values.First().StringValue,
-            //    Id = int.Parse(entityResult.Entity.Key.Path.First().Id.ToString())
-            //}).ToList();
+            var list = resp.Batch.EntityResults.Select(entityResult => new Product
+            {
+                Name = entityResult.Entity.Properties["nm"].Values.First().StringValue,
+                Id = int.Parse(entityResult.Entity.Key.Path.First().Id.ToString())
+            }).ToList();
 
 
             ////test memcache
@@ -95,15 +90,15 @@ namespace AutoComplete.Controllers
             //    Debug.WriteLine(cacheItem);
             //}
 
-            var list = new List<Product>();
-            for (int i = 0; i < 50; i++)
-            {
-                list.Add(new Product()
-                {
-                    Id = i,
-                    Name = $"product{i}"
-                });
-            }
+            //var list = new List<Product>();
+            //for (int i = 0; i < 50; i++)
+            //{
+            //    list.Add(new Product()
+            //    {
+            //        Id = i,
+            //        Name = $"product{i}"
+            //    });
+            //}
             return Json(list);
         }
 
